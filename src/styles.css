@@ -1,0 +1,135 @@
+/* =========================================================
+   piece of cake — 온라인 클래스
+   Design tokens & global styles
+   Warm pastel · round · coral
+   ========================================================= */
+
+:root {
+  /* ---- Color ---- */
+  --coral:        #FF6A45;
+  --coral-deep:   #F0492B;
+  --coral-light:  #FF9B6B;
+  --orange:       #FF9B3D;
+  --thread-c:     #FF6A8A;
+  --butter:       #FFD66B;
+  --mint:         #6FD7BD;
+  --sky:          #93C9FF;
+  --lavender:     #C7B4FF;
+  --pink:         #FFAFC7;
+
+  --cream:        #FFFBF6;
+  --peach:        #FFF2E8;
+  --peach-deep:   #FFE6D4;
+
+  --ink:          #3A2A22;   /* warm near-black */
+  --ink-soft:     #6E5A50;
+  --muted:        #A2908676;
+  --muted-text:   #99857A;
+  --line:         #F2DECE;
+
+  --white:        #FFFFFF;
+  --nav-bg:       rgba(255,251,246,.86);
+
+  /* ---- Radius ---- */
+  --r-xl: 40px;
+  --r-lg: 28px;
+  --r-md: 20px;
+  --r-sm: 14px;
+  --r-pill: 999px;
+
+  /* ---- Shadow (warm, soft) ---- */
+  --sh-sm: 0 6px 16px -8px rgba(208,96,56,.35);
+  --sh-md: 0 18px 40px -20px rgba(208,96,56,.45);
+  --sh-lg: 0 34px 70px -28px rgba(208,96,56,.50);
+  --sh-pop: 0 26px 50px -18px rgba(240,73,43,.40);
+
+  /* ---- Type ---- */
+  --font-display: 'Fredoka', 'Jua', sans-serif;
+  --font-round:   'Jua', 'Pretendard', sans-serif;
+  --font-body:    'Pretendard', system-ui, sans-serif;
+
+  --maxw: 1200px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--cream);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+img { max-width: 100%; display: block; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--coral); color: #fff; }
+
+/* custom cake cursor */
+.cake-cursor {
+  position: fixed; top: 0; left: 0; width: 46px; height: 46px;
+  pointer-events: none; z-index: 10000; transform: translate(-100px, -100px);
+  will-change: transform; filter: drop-shadow(0 5px 5px rgba(90,45,20,.32));
+  transition: scale .16s ease-out, opacity .2s;
+}
+.cake-cursor svg { display: block; width: 100%; height: 100%; transform-origin: 50% 70%; transform: rotate(-3deg); }
+.cake-cursor.hot { scale: 1.04; }
+.cake-cursor.press { scale: .97; }
+.cake-trail {
+  position: fixed; top: 0; left: 0; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--coral); opacity: .3; z-index: 9999; pointer-events: none;
+  transform: translate(-100px, -100px); mix-blend-mode: multiply; will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  html, body, a, button, .card, .chip, .swatch, .nav, .modal-back,
+  input, textarea, label, select { cursor: none; }
+}
+@media (hover: none), (pointer: coarse) { .cake-cursor, .cake-trail { display: none; } }
+
+/* suppress transitions during a theme/mode switch (avoids a Chrome bug where
+   background-color set via the `background` shorthand + var() gets stuck) */
+html.no-trans, html.no-trans * { transition: none !important; }
+
+/* invisible routing waypoints for the connecting thread */
+.thread-wp { display: block; width: 100%; height: 0; pointer-events: none; }
+
+/* ---------- layout helpers ---------- */
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+.section { position: relative; padding: 120px 0; }
+.bg-peach { background: var(--peach); }
+
+.eyebrow {
+  font-family: var(--font-display); font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  font-size: 14px; color: var(--coral);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.eyebrow::before { content: ""; width: 26px; height: 3px; border-radius: 2px; background: var(--coral); }
+
+.h-sec {
+  font-family: var(--font-round); font-weight: 400;
+  font-size: clamp(30px, 4.4vw, 52px); line-height: 1.18;
+  color: var(--ink); margin-top: 16px; letter-spacing: -.01em;
+}
+.sub-sec { color: var(--ink-soft); font-size: 18px; margin-top: 14px; max-width: 560px; }
+
+.eng { font-family: var(--font-display); }
+
+/* reveal on scroll */
+.reveal { opacity: 0; transform: translateY(34px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+.reveal.d1 { transition-delay: .08s; }
+.reveal.d2 { transition-delay: .16s; }
+.reveal.d3 { transition-delay: .24s; }
+.reveal.d4 { transition-delay: .32s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}

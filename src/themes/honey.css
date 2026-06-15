@@ -1,0 +1,18 @@
+/* Theme: Honey 허니 — golden amber, warm & cozy */
+html[data-theme="honey"] {
+  --coral:        #F2A52E;
+  --coral-deep:   #DA8810;
+  --coral-light:  #FFC861;
+  --orange:       #FFB544;
+  --thread-c:     #FF8F3D;
+
+  --cream:        #FFFCF3;
+  --peach:        #FFF6E1;
+  --peach-deep:   #FBEAC6;
+  --line:         #F0E2C0;
+  --butter:       #FFDD7A;
+
+  --ink:          #3E2E18;
+  --ink-soft:     #6E5A38;
+  --muted-text:   #998663;
+}

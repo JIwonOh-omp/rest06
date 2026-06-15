@@ -1,0 +1,29 @@
+/* Mode: Dark 다크 — warm toasted cocoa, keeps the cozy & cute mood.
+   Only overrides NEUTRALS (surface/text/shadow); the accent color comes
+   from whichever color theme is active, so coral/honey/berry/etc still glow. */
+html[data-mode="dark"] {
+  --cream:        #221A15;   /* page — warm dark cocoa */
+  --peach:        #2A211B;   /* tinted bands */
+  --peach-deep:   #34291F;
+  --white:        #2F2620;   /* card / raised surface (lighter than bg) */
+  --line:         #443629;   /* soft warm borders */
+
+  --ink:          #F7EBDF;   /* warm cream text */
+  --ink-soft:     #CDBBAA;
+  --muted-text:   #9C8979;
+
+  --nav-bg:       rgba(28, 21, 17, .86);
+  --cta-bg:       #18110D;   /* deepest panel for the CTA */
+
+  --sh-sm:  0 6px 16px -8px rgba(0,0,0,.55);
+  --sh-md:  0 18px 40px -20px rgba(0,0,0,.62);
+  --sh-lg:  0 34px 70px -28px rgba(0,0,0,.66);
+  --sh-pop: 0 20px 44px -16px rgba(0,0,0,.5);
+}
+
+/* a touch more glow on the accent surfaces so they stay cheerful at night */
+html[data-mode="dark"] .stats-band,
+html[data-mode="dark"] .btn-primary { box-shadow: 0 22px 46px -18px rgba(0,0,0,.55); }
+/* confetti blobs dimmed slightly so they don't scream on the dark canvas */
+html[data-mode="dark"] .float { opacity: .8; }
+html[data-mode="dark"] .hero-badge { box-shadow: var(--sh-sm), inset 0 0 0 1px var(--line); }

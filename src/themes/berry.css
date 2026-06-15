@@ -1,0 +1,18 @@
+/* Theme: Berry 베리 — warm raspberry pink, sweet & soft */
+html[data-theme="berry"] {
+  --coral:        #E25E86;
+  --coral-deep:   #C8466E;
+  --coral-light:  #F58CAC;
+  --orange:       #FF8FA8;
+  --thread-c:     #FFB270;
+
+  --cream:        #FFFAF8;
+  --peach:        #FDEEF1;
+  --peach-deep:   #FAD9E1;
+  --line:         #F2D6DD;
+  --butter:       #FFC6A6;
+
+  --ink:          #3A2330;
+  --ink-soft:     #6E4F5C;
+  --muted-text:   #9D8088;
+}

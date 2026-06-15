@@ -1,0 +1,18 @@
+/* Theme: Terracotta 테라코타 — earthy clay, warm & grounded */
+html[data-theme="terracotta"] {
+  --coral:        #D9694C;
+  --coral-deep:   #BC5238;
+  --coral-light:  #E99277;
+  --orange:       #E08A57;
+  --thread-c:     #CF7E68;
+
+  --cream:        #FCF6F0;
+  --peach:        #F7ECE1;
+  --peach-deep:   #EFDCCC;
+  --line:         #E7D4C3;
+  --butter:       #E7B57C;
+
+  --ink:          #3A271E;
+  --ink-soft:     #6B5347;
+  --muted-text:   #9A8174;
+}

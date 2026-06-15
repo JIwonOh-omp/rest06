@@ -1,0 +1,18 @@
+/* Theme: Apricot 애프리콧 — soft light peach-orange, airy & gentle */
+html[data-theme="apricot"] {
+  --coral:        #FF8A5B;
+  --coral-deep:   #F26A38;
+  --coral-light:  #FFB48C;
+  --orange:       #FFB36B;
+  --thread-c:     #FF9DB1;
+
+  --cream:        #FFFCF8;
+  --peach:        #FFF1E6;
+  --peach-deep:   #FFE3CD;
+  --line:         #F6DEC8;
+  --butter:       #FFD98C;
+
+  --ink:          #3E2A20;
+  --ink-soft:     #715749;
+  --muted-text:   #A2887A;
+}
