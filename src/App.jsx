@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ICONS, CATS, CATMAP, CLASSES, INSTRUCTORS, REVIEWS, STATS, PLANS } from './data';
+import { useAuth } from './contexts/AuthContext';
+import { supabase } from './lib/supabase';
+import AuthModal from './components/AuthModal';
+import UserMenu from './components/UserMenu';
 
 /* ---------- Icon ---------- */
 function Icon({ name, size = 24, sw = 2, cls = '' }) {
@@ -261,7 +265,7 @@ function YarnMini() {
   );
 }
 
-function Nav() {
+function Nav({ onLoginClick }) {
   const [sc, setSc] = useState(false);
   useEffect(() => {
     const f = () => setSc(window.scrollY > 30); f();
@@ -281,7 +285,7 @@ function Nav() {
       <div className="nav-right">
         <ThemeSwitch />
         <ModeToggle />
-        <a href="#pricing" className="btn btn-primary nav-cta">시작하기 <Icon name="arrow" size={18} cls="arr" /></a>
+        <UserMenu onLoginClick={onLoginClick} />
       </div>
     </nav>
   );
@@ -306,7 +310,7 @@ function Marquee() {
   );
 }
 
-function Hero() {
+function Hero({ onLoginClick }) {
   const blobsRef = useRef(null);
   useEffect(() => {
     const onMove = (e) => {
@@ -523,7 +527,8 @@ function Teachers() {
 }
 
 /* ---------- Pricing ---------- */
-function Pricing() {
+function Pricing({ onLoginClick }) {
+  const { user } = useAuth();
   return (
     <section className="section bg-peach" id="pricing">
       <div className="wrap">
@@ -540,7 +545,10 @@ function Pricing() {
               <div className="pdesc">{p.desc}</div>
               <div className="amount eng">₩{p.amount}<small> {p.unit}</small></div>
               <ul>{p.perks.map((k, j) => <li key={j}><span className="ck"><Icon name="check" size={18} /></span>{k}</li>)}</ul>
-              <button className={'btn ' + (p.feat ? 'btn-primary' : 'btn-ghost')}>
+              <button
+                className={'btn ' + (p.feat ? 'btn-primary' : 'btn-ghost')}
+                onClick={!user ? onLoginClick : undefined}
+              >
                 {p.feat ? '멤버십 시작하기' : '선택하기'} <Icon name="arrow" size={18} cls="arr" />
               </button>
             </div>
@@ -552,7 +560,8 @@ function Pricing() {
 }
 
 /* ---------- CTA ---------- */
-function CTA() {
+function CTA({ onLoginClick }) {
+  const { user } = useAuth();
   return (
     <section className="section cta-final">
       <div className="wrap">
@@ -562,7 +571,10 @@ function CTA() {
           <div className="c-blob" style={{ width: 90, height: 90, background: '#6FD7BD', top: 40, right: 80, opacity: .6 }} />
           <h2>Your next hobby is<br /><span className="pop">a piece of cake.</span></h2>
           <p className="kr">오늘의 작은 시작이, 내일의 다정한 취미가 돼요.</p>
-          <a href="#classes" className="btn btn-primary">첫 클래스 시작하기 <Icon name="arrow" size={18} cls="arr" /></a>
+          {user
+            ? <a href="#classes" className="btn btn-primary">첫 클래스 시작하기 <Icon name="arrow" size={18} cls="arr" /></a>
+            : <button className="btn btn-primary" onClick={onLoginClick}>로그인하고 시작하기 <Icon name="arrow" size={18} cls="arr" /></button>
+          }
         </div>
       </div>
     </section>
@@ -602,10 +614,13 @@ function Footer() {
   );
 }
 
-/* ---------- Modal ---------- */
-function Modal({ data, onClose }) {
-  const [applied, setApplied] = useState(false);
+/* ---------- Class detail Modal ---------- */
+function Modal({ data, onClose, onAuthRequired }) {
+  const { user } = useAuth();
+  const [enrolled, setEnrolled] = useState(false);
+  const [enrolling, setEnrolling] = useState(false);
   const [show, setShow] = useState(false);
+
   useEffect(() => {
     document.body.classList.add('locked');
     requestAnimationFrame(() => setShow(true));
@@ -613,9 +628,39 @@ function Modal({ data, onClose }) {
     window.addEventListener('keydown', onKey);
     return () => { document.body.classList.remove('locked'); window.removeEventListener('keydown', onKey); };
   }, []);
+
+  // 로그인 상태라면 수강 여부 확인
+  useEffect(() => {
+    if (!user || !data) return;
+    supabase
+      .from('enrollments')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('class_id', data.id)
+      .maybeSingle()
+      .then(({ data: row }) => { if (row) setEnrolled(true); });
+  }, [user, data]);
+
   const close = () => { setShow(false); setTimeout(onClose, 320); };
+
+  const handleEnroll = async () => {
+    if (!user) { onAuthRequired(); return; }
+    setEnrolling(true);
+    await supabase.from('enrollments').upsert({ user_id: user.id, class_id: data.id });
+    setEnrolled(true);
+    setEnrolling(false);
+  };
+
   if (!data) return null;
   const cat = CATMAP[data.cat];
+
+  const enrollLabel = () => {
+    if (enrolled) return <><Icon name="check" size={18} /> 수강 중인 클래스예요</>;
+    if (enrolling) return '신청 중…';
+    if (!user) return <>로그인 후 수강 신청 <Icon name="arrow" size={18} cls="arr" /></>;
+    return <>수강 신청하기 <Icon name="arrow" size={18} cls="arr" /></>;
+  };
+
   return (
     <div className={'modal-back' + (show ? ' show' : '')} onClick={(e) => { if (e.target.classList.contains('modal-back')) close(); }}>
       <div className="modal">
@@ -639,10 +684,12 @@ function Modal({ data, onClose }) {
           <ol className="curric">{data.curric.map((c, i) => <li key={i}>{c}</li>)}</ol>
           <div className="modal-foot">
             <span className="mp">{data.price}<small>원~ · 평생소장</small></span>
-            <button className={'btn ' + (applied ? 'btn-primary done' : 'btn-primary')} onClick={() => setApplied(true)}>
-              {applied
-                ? <><Icon name="check" size={18} /> 수강 바구니에 담았어요</>
-                : <>수강 신청하기 <Icon name="arrow" size={18} cls="arr" /></>}
+            <button
+              className={'btn btn-primary' + (enrolled ? ' done' : '')}
+              onClick={handleEnroll}
+              disabled={enrolling}
+            >
+              {enrollLabel()}
             </button>
           </div>
         </div>
@@ -654,22 +701,31 @@ function Modal({ data, onClose }) {
 /* ---------- App ---------- */
 function App() {
   const [open, setOpen] = useState(null);
+  const [authOpen, setAuthOpen] = useState(false);
   useReveal();
+
   return (
     <>
       <Cursor />
       <Thread />
-      <Nav />
-      <Hero />
+      <Nav onLoginClick={() => setAuthOpen(true)} />
+      <Hero onLoginClick={() => setAuthOpen(true)} />
       <Classes onOpen={setOpen} />
       <How />
       <Stats />
       <Reviews />
       <Teachers />
-      <Pricing />
-      <CTA />
+      <Pricing onLoginClick={() => setAuthOpen(true)} />
+      <CTA onLoginClick={() => setAuthOpen(true)} />
       <Footer />
-      {open && <Modal data={open} onClose={() => setOpen(null)} />}
+      {open && (
+        <Modal
+          data={open}
+          onClose={() => setOpen(null)}
+          onAuthRequired={() => { setOpen(null); setAuthOpen(true); }}
+        />
+      )}
+      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
     </>
   );
 }
