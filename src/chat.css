@@ -2,11 +2,72 @@
    piece of cake — ChatWidget 스타일
    ===================================================== */
 
+@keyframes floatSoft {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
 .chat-widget {
   position: fixed;
   bottom: 28px;
   right: 28px;
   z-index: 3000;
+}
+
+/* ---------- 클러스터 (툴팁 + FAB 묶음) ---------- */
+.chat-cluster {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  animation: floatSoft 4s ease-in-out infinite;
+}
+/* 팝업 열려 있는 동안 float 정지 */
+.chat-widget.is-open .chat-cluster {
+  animation: none;
+}
+
+/* ---------- 풍선 도움말 ---------- */
+.chat-tooltip {
+  background: var(--cream);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 14px 16px 12px;
+  max-width: 240px;
+  box-shadow: 0 8px 28px -8px rgba(0,0,0,.18);
+  cursor: pointer;
+  position: relative;
+  transition: transform .2s cubic-bezier(.3,1.4,.5,1), box-shadow .2s;
+}
+.chat-tooltip:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,.22);
+}
+/* 아래 화살표 — 항상 FAB 방향(우하단) 가리킴 */
+.chat-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 22px;
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid var(--cream);
+  filter: drop-shadow(0 2px 0 var(--line));
+}
+
+.chat-tooltip p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+.chat-tooltip-cta {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--coral);
 }
 
 /* ---------- FAB 버튼 ---------- */
@@ -17,27 +78,15 @@
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 24px -6px rgba(255, 106, 69, .55);
   transition: transform .25s cubic-bezier(.3,1.4,.5,1), box-shadow .25s, background .2s;
-  position: relative;
+  flex-shrink: 0;
 }
 .chat-fab:hover { transform: scale(1.1); box-shadow: 0 12px 28px -6px rgba(255,106,69,.65); }
 .chat-fab.active { background: var(--ink); box-shadow: 0 8px 24px -6px rgba(0,0,0,.3); }
 
-.chat-badge {
-  position: absolute; top: 8px; right: 8px;
-  width: 10px; height: 10px; border-radius: 50%;
-  background: #FF3B30;
-  border: 2px solid #fff;
-  animation: badgePulse 2s ease-in-out infinite;
-}
-@keyframes badgePulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.3); opacity: .7; }
-}
-
 /* ---------- 팝업 ---------- */
 .chat-popup {
   position: absolute;
-  bottom: 72px; right: 0;
+  bottom: 78px; right: 0;
   width: 360px;
   background: var(--cream);
   border-radius: var(--r-xl);
@@ -91,9 +140,7 @@
 .chat-body::-webkit-scrollbar { width: 4px; }
 .chat-body::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
 
-.chat-msg {
-  display: flex; align-items: flex-end; gap: 8px;
-}
+.chat-msg { display: flex; align-items: flex-end; gap: 8px; }
 .chat-msg.user { flex-direction: row-reverse; }
 
 .chat-avatar { flex: 0 0 32px; width: 32px; height: 32px; }
@@ -171,13 +218,16 @@
 .chat-send:disabled { background: var(--line); color: var(--muted-text); }
 
 /* ---------- 다크모드 ---------- */
-html[data-mode="dark"] .chat-popup { background: var(--white); }
+html[data-mode="dark"] .chat-popup  { background: var(--white); }
 html[data-mode="dark"] .chat-footer { background: var(--white); }
 html[data-mode="dark"] .chat-msg.assistant .chat-bubble { background: var(--cream); }
-html[data-mode="dark"] .chat-input { background: var(--cream); }
+html[data-mode="dark"] .chat-input  { background: var(--cream); }
+html[data-mode="dark"] .chat-tooltip { background: var(--white); }
+html[data-mode="dark"] .chat-tooltip::after { border-top-color: var(--white); }
 
 /* ---------- 모바일 ---------- */
 @media (max-width: 480px) {
   .chat-widget { bottom: 16px; right: 16px; }
-  .chat-popup { width: calc(100vw - 32px); right: 0; }
+  .chat-popup  { width: calc(100vw - 32px); right: 0; }
+  .chat-tooltip { max-width: 200px; }
 }

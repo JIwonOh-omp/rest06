@@ -72,8 +72,8 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="chat-widget">
-      {/* 팝업 */}
+    <div className={'chat-widget' + (open ? ' is-open' : '')}>
+      {/* 채팅 팝업 — 클러스터 밖, float 안 함 */}
       <div className={'chat-popup' + (open ? ' open' : '')} aria-hidden={!open}>
         <div className="chat-header">
           <div className="chat-header-info">
@@ -129,18 +129,25 @@ export default function ChatWidget() {
         </div>
       </div>
 
-      {/* 플로팅 버튼 */}
-      <button
-        className={'chat-fab' + (open ? ' active' : '')}
-        onClick={() => setOpen(v => !v)}
-        aria-label="상담 채팅 열기"
-      >
-        {open
-          ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
-          : <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        }
-        {!open && <span className="chat-badge" />}
-      </button>
+      {/* 풍선 도움말 + FAB — 하나의 클러스터로 float */}
+      <div className="chat-cluster">
+        {!open && (
+          <div className="chat-tooltip" onClick={() => setOpen(true)}>
+            <p>💬 AI 학습 도우미 — 특강 일정·n8n·AI 영상 등 궁금한 건 여기서 물어보세요!</p>
+            <span className="chat-tooltip-cta">채팅 시작 ↗</span>
+          </div>
+        )}
+        <button
+          className={'chat-fab' + (open ? ' active' : '')}
+          onClick={() => setOpen(v => !v)}
+          aria-label="상담 채팅 열기"
+        >
+          {open
+            ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            : <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          }
+        </button>
+      </div>
     </div>
   );
 }
