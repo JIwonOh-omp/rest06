@@ -4,6 +4,7 @@ import { useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
 import AuthModal from './components/AuthModal';
 import UserMenu from './components/UserMenu';
+import ChatWidget from './components/ChatWidget';
 
 /* ---------- Icon ---------- */
 function Icon({ name, size = 24, sw = 2, cls = '' }) {
@@ -726,6 +727,7 @@ function App() {
         />
       )}
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
+      <ChatWidget />
     </>
   );
 }
